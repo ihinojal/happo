@@ -37,7 +37,7 @@ config :happo, HappoWeb.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg|sass)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/happo_web/views/.*(ex)$},
-      ~r{lib/happo_web/templates/.*(eex)$}
+      ~r{web/templates/.*(eex|slim|slime)$}
     ]
   ]
 

@@ -40,7 +40,10 @@ defmodule Happo.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      # Use slim in templates. Info at:
+      # https://github.com/slime-lang/phoenix_slime
+      {:phoenix_slime, github: "slime-lang/phoenix_slime", ref: "8ea70c4"}
     ]
   end
 

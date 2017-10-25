@@ -20,7 +20,13 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: "css/app.css"
+      // See bug https://github.com/brunch/brunch/issues/878 if you are
+      // getting the warning:
+      // compiled, but not written. Check your stylesheets.joinTo config
+      joinTo: {
+        "css/app.css": "css/app/*",
+        "css/email.css": "css/email/*"
+      }
     },
     templates: {
       joinTo: "js/app.js"
@@ -37,7 +43,7 @@ exports.config = {
   // Phoenix paths configuration
   paths: {
     // Dependencies and current project directories to watch
-    watched: ["static", "css", "js", "vendor"],
+    watched: ["static", "css/app", "css/email", "js", "vendor"],
     // Where to compile files to
     public: "../priv/static"
   },

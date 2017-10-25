@@ -43,7 +43,14 @@ defmodule Happo.Mixfile do
       {:cowboy, "~> 1.0"},
       # Use slim in templates. Info at:
       # https://github.com/slime-lang/phoenix_slime
-      {:phoenix_slime, github: "slime-lang/phoenix_slime", ref: "8ea70c4"}
+      {:phoenix_slime, github: "slime-lang/phoenix_slime", ref: "8ea70c4"},
+      # Makes easier to manage crypto with logins
+      # https://github.com/riverrun/comeonin
+      {:comeonin, "~> 4.0"},
+      {:bcrypt_elixir, "~> 1.0"},
+      # Use mock for subsitute functions in testing
+      # https://github.com/jjh42/mock
+      {:mock, "~> 0.3.0", only: :test},
     ]
   end
 

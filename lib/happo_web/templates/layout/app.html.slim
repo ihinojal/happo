@@ -15,7 +15,12 @@ html lang="en"
         nav role="navigation"
           ul.nav.nav-pills.pull-right
             li
-              a href="http://www.phoenixframework.org/docs" Get Started
+              =if @current_user do
+                =link "Log out", to: session_path(@conn, :delete),
+                  method: :delete
+              -else
+                =link "Login", to: session_path(@conn, :new)
+                =link "Register", to: user_path(@conn, :new)
         span.logo
 
       p.alert.alert-info role="alert"= get_flash(@conn, :info)

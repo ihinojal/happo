@@ -1,0 +1,28 @@
+=form_for @changeset, user_path(@conn, :create), fn(f) ->
+  =inspect(@changeset)
+  .field
+    =label f, :first_name, "Name"
+    =text_input f, :first_name
+    =error_tag f, :first_name
+  .field
+    =label f, :last_name, "Last name"
+    =text_input f, :last_name
+    =error_tag f, :last_name
+  .field
+    =label f, :email, "Email"
+    =text_input f, :email
+    =error_tag f, :email
+  .field
+    =label f, :terms_of_service
+    =checkbox f, :terms_of_service
+    =error_tag f, :terms_of_service
+  .field
+    =label f, :password, "Password"
+    =password_input f, :password
+    =error_tag f, :password
+    =label f, :password_confirmation, "Password confirmation"
+    =password_input f, :password_confirmation
+    =error_tag f, :password_confirmation
+
+  =submit "Register"
+

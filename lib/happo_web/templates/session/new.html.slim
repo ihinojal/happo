@@ -1,0 +1,11 @@
+=form_for @conn, session_path(@conn, :create), [as: :session], fn(f) ->
+  .field
+    =label f, :email
+    =text_input f, :email
+  .field
+    =label f, :password
+    =password_input f, :password
+
+  =submit "Log in"
+
+

@@ -23,6 +23,9 @@ defmodule HappoWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint HappoWeb.Endpoint
+
+      # Factories with build a create elements
+      alias HappoWeb.Factory
     end
   end
 
@@ -32,7 +35,22 @@ defmodule HappoWeb.ConnCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Happo.Repo, {:shared, self()})
     end
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    conn = Phoenix.ConnTest.build_conn()
+
+    #───────────────────────────────────────────────────────────────────
+    # @tag [:logged_user]
+    #
+    # Creates an user and assign to connection to make it as logged
+    #───────────────────────────────────────────────────────────────────
+    user = cond do
+      tags[:logged_user] -> HappoWeb.Factory.create!(:user)
+      true -> nil
+    end
+    # Set variable @current_user to the logged user or nil
+    conn = Plug.Conn.assign(conn, :current_user, user)
+
+    {:ok, conn: conn, user: user}
   end
 
 end

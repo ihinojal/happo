@@ -59,6 +59,14 @@ config :logger, level: :info
 #     config :happo, HappoWeb.Endpoint, server: true
 #
 
+# Configure how to send emails
+# ──────────────────────────────────────────────────────────────────────
+# Send emails using SparkPost service. It allow to send 25k emails
+# monthly for free.
+config :happo, Happo.Mailer,
+  adapter: Bamboo.SparkPostAdapter
+  api_key: {:system, "SPARKPOST_API_TOKEN"}
+
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 import_config "prod.secret.exs"

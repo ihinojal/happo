@@ -19,6 +19,8 @@ defmodule HappoWeb.UserController do
   def create(conn, %{"user" => params}) do
     case Registration.create_user(params) do
       {:ok, user} ->
+        # Send registration email with verification code.
+        HappoWeb.Email.registration(user) |> Happo.Mailer.deliver_later()
         # Show message and redirect to login page.
         conn
         |> put_flash(:notice, "Please check your mail to log in")

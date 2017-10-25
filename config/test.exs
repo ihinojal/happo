@@ -17,3 +17,15 @@ config :happo, Happo.Repo,
   database: "happo_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+
+# Reduce crypto difficulty in testing according to comeoinin guideliness
+# https://github.com/riverrun/comeonin#installation
+config :bcrypt_elixir, :log_rounds, 4
+
+# Configure how to send emails
+# ──────────────────────────────────────────────────────────────────────
+# No emails are sent, instead a message is sent to the current process
+# and can be asserted on with helpers from Bamboo.Test.
+config :happo, Happo.Mailer,
+  adapter: Bamboo.TestAdapter

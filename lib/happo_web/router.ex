@@ -27,6 +27,12 @@ defmodule HappoWeb.Router do
       only: [:new, :create, :delete], singleton: true
   end
 
+  # Preview emails in development. Go to
+  # http://localhost:4000/sent_emails
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", HappoWeb do
   #   pipe_through :api

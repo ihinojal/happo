@@ -56,3 +56,12 @@ config :happo, Happo.Repo,
   database: "happo_dev",
   hostname: "localhost",
   pool_size: 10
+
+# Configure how to send emails
+# ──────────────────────────────────────────────────────────────────────
+# Use this adapter for storing emails locally instead of sending them.
+# Emails are stored and can be read from Bamboo.SentEmail. Typically
+# this adapter is used in the dev environment so emails are not
+# delivered to real email addresses.
+config :happo, Happo.Mailer,
+  adapter: Bamboo.LocalAdapter

@@ -51,6 +51,11 @@ defmodule Happo.Mixfile do
       # Use mock for subsitute functions in testing
       # https://github.com/jjh42/mock
       {:mock, "~> 0.3.0", only: :test},
+      # Send emails using Bamboo
+      # https://github.com/thoughtbot/bamboo
+      {:bamboo, "~> 0.8.0"},
+      # Sparkpost is an external service to send transactional emails
+      {:bamboo_sparkpost, "~> 0.8.0", only: :prod},
     ]
   end
 

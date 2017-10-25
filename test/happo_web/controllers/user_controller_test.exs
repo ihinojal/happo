@@ -31,6 +31,8 @@ defmodule HappoWeb.UserControllerTest do
         user: @valid_registration_params
       assert get_flash(conn, :notice)
       assert html_response(conn, 302)
+      assert_delivered_email HappoWeb.Email.registration(
+        %{first_name: "Ivan", email: "user@example.com"})
     end
 
     test "if unsuccesful render with message", %{conn: conn} do

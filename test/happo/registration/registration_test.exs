@@ -42,6 +42,14 @@ defmodule Happo.RegistrationTest do
     end
   end
 
+  describe "get_user_by!(params)" do
+    test "raise error if no match" do
+      assert_raise Ecto.NoResultsError, fn->
+        get_user_by!(%{email: "none@dom.com"})
+      end
+    end
+  end
+
   describe "verify credentials" do
     setup do
       {:ok, user} = create_user(@valid_user_attrs)
@@ -76,6 +84,38 @@ defmodule Happo.RegistrationTest do
     test "if user is not present, returns nil", %{user: _user} do
       assert nil == get_user(0)
     end
+  end
+
+  describe "secret tokens" do
+    setup [:insert_user]
+    test "I can generate a token and later verify it", %{user: user} do
+      token = get_secret_token(user, :verification_email)
+      assert {:ok, user} ==
+        verify_secret_token(token, user, :verification_email)
+    end
+    test "if token reason is different, fail with invalid", %{user: user} do
+      token = get_secret_token(user, :verification_email)
+      assert {:error, :invalid} ==
+        verify_secret_token(token, user, :recover_email)
+    end
+    test "if token is of another user, fail with invalid" do
+      token = get_secret_token(%User{id: 123}, :verification_email)
+      assert {:error, :belongs_to_other} ==
+        verify_secret_token(token, %User{id: 456}, :verification_email)
+    end
+    test "if token time has passed, fail with expired", %{user: user} do
+      signed_time_1_day_ago = System.system_time(:seconds) - 84000
+      token = get_secret_token(user, :verification_email,
+        signed_at: signed_time_1_day_ago)
+      assert {:error, :expired} ==
+        verify_secret_token(token, user, :verification_email)
+    end
+  end
+
+  #─────────────────────────────────────────────────────────────────────
+  defp insert_user(ctx) do
+    {:ok, user} = create_user(@valid_user_attrs)
+    {:ok, Map.put(ctx, :user, user)}
   end
 
 end

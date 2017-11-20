@@ -1,2 +1,3 @@
 Welcome
 =@user.first_name
+=link "Verify", to: user_url(HappoWeb.Endpoint, :verify, @user.id, @email_verification_token)

@@ -1,1 +1,4 @@
 Welcome <%= @user.first_name %>
+
+Please click in the following link:
+<%= user_url(HappoWeb.Endpoint, :verify, @user.id, @email_verification_token) %>

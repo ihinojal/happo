@@ -12,11 +12,16 @@ defmodule HappoWeb.Email do
   use Bamboo.Phoenix, view: HappoWeb.EmailView
 
   def registration(user) do
+
     base_email()
     |> to(user.email)
     |> subject("Registration email!")
     # Make @user available in templates
     |> assign(:user, user)
+    # Load the code to later verify the user email when clicking the
+    # verification link inside the email
+    |> assign(:email_verification_token,
+        Happo.Registration.get_secret_token(user, :email_verification))
     # Renders and combine both html and text version
     |> render(:registration)
   end

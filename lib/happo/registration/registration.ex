@@ -50,6 +50,10 @@ defmodule Happo.Registration do
   def get_user_by(params) do
     Repo.get_by(User, params)
   end
+  @doc """
+  Same that get_user_by, but raises error if no element is found
+  """
+  def get_user_by!(params), do: Repo.get_by!(User, params)
 
   @doc """
   Use email and password to find out if there is an user with that email
@@ -108,6 +112,77 @@ defmodule Happo.Registration do
     get_user(id) |> Repo.delete!()
   end
 
+  @doc """
+  Get a signed token. This signed token is a jiberish letters and
+  numbers (in base64) matching the following scheme:
+
+      "<hashing_method>.<payload>.<signature>"
+
+  It's tipically used to send it to the user using a secure channel
+  (email) so he can later give it back via unsecure channel (website) so
+  we can verify the identity of an user (assuming the secure channel is
+  not compromised).
+
+  The parameter `reason` will namespace the token, to have several
+  tokens of different things. It can be any string or atom. Tipically
+  the reason is what is the secret for. For example:
+
+   - For email verification
+   - Recover a lost password
+   - Unsubscribe from a mailing list.
+
+  Options are the same that function `Phoenix.Token.sign/4`.
+
+      iex> get_secret_token(%User{id: 123}, :email_vrf)
+      "SFMyNTY.g3QAAAZE0WnYoL34V18B.gc8ojDvFvUtzTqMiNHv8"
+  """
+  def get_secret_token(%{id: id}, reason, opts \\ []) do
+    Phoenix.Token.sign(
+      HappoWeb.Endpoint, # Use secret key from endpoint
+      to_string(reason), # used to namespace this token
+      id, # Use something diferent for each user/entity
+      opts
+    )
+  end
+
+  @doc """
+  Verify if a token coming from an user is valid or not. Posible causes
+  if is not valid: timeout, content tampered, code for another user.
+
+      iex> token = "SFMyNTY.g3QAAAZE0WnYoL34V18B.gc8ojDvFvUtzTqMiNHv8"
+      iex> user = %User{id: 123}
+      iex> verify_secret_token(token, user, :email_vrf)
+      {:ok, %User{id: 123}}
+      iex> verify_secret_token("invalid_token", user, :email_vrf)
+      {:error, :invalid}
+      iex> verify_secret_token(token, user, :another_reason)
+      {:error, :invalid}
+
+  It allows any option from `Phoenix.Token.verify/3`. `max_age` option
+  allow to expire tokens some time (measured in seconds) after
+  generation.
+
+      iex> verify_secret_token(token, user, :email_vrf, max_age: 100)
+      {:error, :expired}
+
+  If user is binary, retrieve the user id if available.
+
+      iex> verify_secret_token(token, "123", :email_vrf)
+      {:ok, %User{id: 123}}
+  """
+  def verify_secret_token(token, %{id: id} = user, reason, opts \\ []) do
+    options = Enum.into(opts, [max_age: 3600])
+    case Phoenix.Token.verify(
+      HappoWeb.Endpoint, # Use secret key from endpoint
+      to_string(reason), # used an atom to namespace this token
+      token, # The signed token to be verified
+      options) # Any additional option
+    do
+      {:ok, ^id} -> {:ok, user}
+      {:ok, _another_id} -> {:error, :belongs_to_other}
+      result -> result
+    end
+  end
   #────────────────────────────────────────────────────────────────────
   # PRIVATE FUNCTIONS
   #────────────────────────────────────────────────────────────────────

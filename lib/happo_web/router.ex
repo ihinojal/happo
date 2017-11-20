@@ -21,8 +21,11 @@ defmodule HappoWeb.Router do
 
     get "/", PageController, :index
     # Register user
-    resources "/users", UserController,
-      only: [:new, :create, :delete], singleton: true
+    scope "/users" do
+      resources "/", UserController,
+        only: [:new, :create, :delete], singleton: true
+      get "/verify/:id/:email_verification_token", UserController, :verify
+    end
     resources "/session", SessionController,
       only: [:new, :create, :delete], singleton: true
   end
